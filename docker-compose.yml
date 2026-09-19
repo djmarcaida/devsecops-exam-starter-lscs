@@ -1,0 +1,54 @@
+# ==============================================================================
+# Macky Merch API - Local Orchestration Stack (Bonus Milestone)
+# Architecture:
+#   - api: Multi-stage production Express application (Node.js 20 Alpine)
+#   - redis: In-memory datastore with automated health checking (Redis Alpine)
+#   - macky-network: Isolated custom bridge network for internal DNS resolution
+# ==============================================================================
+
+services:
+  # ----------------------------------------------------------------------------
+  # Express API Service
+  # ----------------------------------------------------------------------------
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: macky-api
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    depends_on:
+      redis:
+        condition: service_healthy
+    networks:
+      - macky-network
+
+  # ----------------------------------------------------------------------------
+  # Redis Cache & Datastore Service
+  # ----------------------------------------------------------------------------
+  redis:
+    image: redis:alpine
+    container_name: macky-redis
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+    networks:
+      - macky-network
+
+# ------------------------------------------------------------------------------
+# Dedicated Custom Bridge Network
+# ------------------------------------------------------------------------------
+networks:
+  macky-network:
+    name: macky-bridge-net
+    driver: bridge
