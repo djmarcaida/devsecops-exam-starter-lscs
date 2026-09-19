@@ -1,0 +1,43 @@
+name: CI Pipeline
+
+# Trigger automatically on pushes and pull requests targeting the main branch
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+# DevSecOps Best Practice: Restrict GITHUB_TOKEN permissions to least privilege
+permissions:
+  contents: read
+
+jobs:
+  build-and-test:
+    name: Build, Test & Container Validation
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Check out the repository code
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Step 2: Set up Node.js (v20) with npm cache enabled
+      - name: Set up Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      # Step 3: Clean install dependencies deterministically
+      - name: Install dependencies (clean install)
+        run: npm ci
+
+      # Step 4: Run automated test suite
+      - name: Run automated tests
+        run: npm test
+
+      # Step 5: Build the Docker image from Dockerfile to verify image validity
+      - name: Build Docker image
+        run: docker build -t macky-merch-api:${{ github.sha }} .
