@@ -22,6 +22,7 @@ This repository contains the production-grade DevSecOps pipeline and container o
    - [Remediation Workflow](#remediation-workflow)
 4. [Engineering Challenges & Technical Solutions](#4-engineering-challenges--technical-solutions)
 5. [Summary of DevSecOps & Production Features](#5-summary-of-devsecops--production-features)
+6. [Branch Protection Rule Guidance (Governance & Compliance)](#6-branch-protection-rule-guidance-governance--compliance)
 
 ---
 
@@ -277,3 +278,27 @@ To remediate the vulnerability and unblock the pipeline:
 | **Automated Vulnerability Gate**| Aqua Security Trivy in GitHub Actions | Scans code, lockfiles, and container layers for CRITICAL/HIGH CVEs with build break rules. |
 | **Microservice Isolation** | Docker Compose custom bridge network | Internal DNS service discovery without exposing internal datastores (Redis) to public host ports. |
 | **Process Lifecycle** | Exec-form `CMD ["node", "server.js"]` | Direct PID 1 signal propagation for zero-downtime container termination. |
+| **Branch Protection** | Required Status Checks (`build-and-test`) | Prevents merging code with failing tests or unmitigated High/Critical CVEs. |
+
+---
+
+## 6. Branch Protection Rule Guidance (Governance & Compliance)
+
+To enforce the DevSecOps quality gate and ensure no vulnerable code enters production unreviewed, branch protection must be enabled on the `main` branch.
+
+### Recommended GitHub Branch Protection Configuration:
+
+1. Navigate to **Settings** ➔ **Branches** ➔ Click **Add branch protection rule** (or **Rulesets**).
+2. Set **Branch name pattern** to `main`.
+3. Enable **Require a pull request before merging**:
+   - Check *Require approvals* (minimum 1 peer review).
+   - Check *Dismiss stale pull request approvals when new commits are pushed*.
+4. Enable **Require status checks to pass before merging**:
+   - Check *Require branches to be up to date before merging*.
+   - In the search box, select the status check: **`Build, Test & Security Scan`** (the job name defined in `.github/workflows/ci.yml`).
+5. Enable **Do not allow bypassing the above settings** (enforce policy across administrators to prevent accidental overrides).
+6. Click **Create** / **Save changes**.
+
+> [!IMPORTANT]
+> **DevSecOps Impact:**
+> With this rule active, when a pull request introduces high/critical CVEs (such as our deliberate `lodash@4.17.15` vulnerability), the Trivy scanner triggers an exit code 1, marking the status check as **Failed (Red ❌)**. GitHub's branch protection engine will physically disable the **Merge pull request** button, cryptographically safeguarding the `main` branch against vulnerable releases.
