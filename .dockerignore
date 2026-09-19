@@ -1,0 +1,31 @@
+# ==========================================
+# Docker Ignore Rules - Macky Merch API
+# ==========================================
+
+# Dependencies (prevent local modules from polluting container build context)
+node_modules
+
+# Version Control
+.git
+.gitignore
+
+# Environment variables & secrets (prevent leaking credentials into image layers)
+.env
+.env.*
+!.env.example
+
+# Debug and runtime logs
+npm-debug.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Test and coverage reports
+coverage
+.nyc_output
+
+# Editor & OS metadata
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
