@@ -1,0 +1,71 @@
+name: CI Pipeline with Security Scanning
+
+# Trigger automatically on pushes and pull requests targeting the main branch
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+# DevSecOps Best Practice: Principle of Least Privilege for GitHub Token
+permissions:
+  contents: read
+
+jobs:
+  build-and-test:
+    name: Build, Test & Security Scan
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Securely checkout the repository
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Step 2: Set up Node.js runtime and enable npm package caching
+      - name: Set up Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      # Step 3: Clean install dependencies deterministically
+      - name: Install dependencies (clean install)
+        run: npm ci
+
+      # Step 4: Run automated test suite
+      - name: Run automated tests
+        run: npm test
+
+      # Step 5: Build Docker image for container validation
+      - name: Build Docker image
+        id: build_docker
+        run: docker build -t macky-merch-api:${{ github.sha }} .
+
+      # Step 6: Automated Security Scanning (Filesystem & Dependencies)
+      # Scans repository manifests and lockfiles for known CVEs
+      - name: Run Trivy vulnerability scanner (Filesystem & Dependencies)
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          format: 'table'
+          severity: 'CRITICAL,HIGH'
+          # Set exit-code to '1' to enforce a blocking security gate (fails CI on CRITICAL/HIGH)
+          # Set exit-code to '0' for non-blocking alert/monitoring mode
+          exit-code: '1'
+
+      # Step 7: Automated Security Scanning (Container Image)
+      # Scans base OS packages (Alpine) and bundled node_modules in container layers
+      - name: Run Trivy vulnerability scanner (Container Image)
+        if: always() && steps.build_docker.outcome == 'success'
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          scan-type: 'image'
+          image-ref: 'macky-merch-api:${{ github.sha }}'
+          format: 'table'
+          severity: 'CRITICAL,HIGH'
+          # Set exit-code to '1' to enforce a blocking security gate (fails CI on CRITICAL/HIGH)
+          # Set exit-code to '0' for non-blocking alert/monitoring mode
+          exit-code: '1'
