@@ -153,7 +153,7 @@ In [.github/workflows/ci.yml](.github/workflows/ci.yml), Trivy is configured wit
 
 ```yaml
 - name: Run Trivy vulnerability scanner (Filesystem & Dependencies)
-  uses: aquasecurity/trivy-action@v0.28.0
+  uses: aquasecurity/trivy-action@v0.36.0
   with:
     scan-type: 'fs'
     scan-ref: '.'
@@ -163,7 +163,7 @@ In [.github/workflows/ci.yml](.github/workflows/ci.yml), Trivy is configured wit
 
 - name: Run Trivy vulnerability scanner (Container Image)
   if: always() && steps.build_docker.outcome == 'success'
-  uses: aquasecurity/trivy-action@v0.28.0
+  uses: aquasecurity/trivy-action@v0.36.0
   with:
     scan-type: 'image'
     image-ref: 'macky-merch-api:${{ github.sha }}'
