@@ -37,7 +37,13 @@ ENV NODE_ENV=production \
 
 # Set application directory and ensure ownership for the non-root node user
 WORKDIR /app
-RUN chown -R node:node /app
+
+# DevSecOps Hardening:
+# 1. Update installed Alpine packages to patch known OS-level CVEs (libcrypto3, libssl3)
+# 2. Purge unused global package managers (npm, yarn, corepack) to eliminate container-level CVEs
+RUN apk update && apk upgrade --no-cache \
+    && rm -rf /usr/local/lib/node_modules/npm /usr/local/bin/npm /usr/local/bin/npx /opt/yarn* /usr/local/bin/corepack \
+    && chown -R node:node /app
 
 # Switch to non-root user (Principle of Least Privilege)
 USER node

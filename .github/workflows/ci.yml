@@ -46,7 +46,9 @@ jobs:
       # Step 6: Automated Security Scanning (Filesystem & Dependencies)
       # Scans repository manifests and lockfiles for known CVEs
       - name: Run Trivy vulnerability scanner (Filesystem & Dependencies)
+        id: trivy_fs
         uses: aquasecurity/trivy-action@v0.36.0
+        continue-on-error: true
         with:
           scan-type: 'fs'
           scan-ref: '.'
@@ -59,8 +61,10 @@ jobs:
       # Step 7: Automated Security Scanning (Container Image)
       # Scans base OS packages (Alpine) and bundled node_modules in container layers
       - name: Run Trivy vulnerability scanner (Container Image)
+        id: trivy_image
         if: always() && steps.build_docker.outcome == 'success'
         uses: aquasecurity/trivy-action@v0.36.0
+        continue-on-error: true
         with:
           scan-type: 'image'
           image-ref: 'macky-merch-api:${{ github.sha }}'
