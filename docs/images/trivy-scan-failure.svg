@@ -1,0 +1,108 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 850 480" width="100%" height="100%">
+  <defs>
+    <style>
+      .bg { fill: #0d1117; rx: 12px; }
+      .header-bar { fill: #161b22; }
+      .title { fill: #e6edf3; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; font-size: 14px; font-weight: 600; }
+      .subtitle { fill: #8b949e; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; font-size: 12px; }
+      .step-text { fill: #c9d1d9; font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace; font-size: 13px; }
+      .step-duration { fill: #8b949e; font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace; font-size: 12px; }
+      .log-box { fill: #161b22; stroke: #30363d; stroke-width: 1px; rx: 6px; }
+      .log-header { fill: #f0883e; font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace; font-size: 12px; font-weight: 600; }
+      .log-text { fill: #8b949e; font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace; font-size: 11.5px; }
+      .log-highlight { fill: #ff7b72; font-weight: 600; }
+      .badge-success { fill: #238636; rx: 10px; }
+      .badge-text { fill: #ffffff; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; font-size: 11px; font-weight: 600; }
+    </style>
+  </defs>
+
+  <!-- Background card -->
+  <rect width="850" height="480" class="bg" stroke="#30363d" stroke-width="1.5"/>
+
+  <!-- Window Controls Header -->
+  <path d="M 0 12 Q 0 0 12 0 L 838 0 Q 850 0 850 12 L 850 42 L 0 42 Z" class="header-bar"/>
+  <circle cx="20" cy="21" r="6" fill="#ff5f56"/>
+  <circle cx="38" cy="21" r="6" fill="#ffbd2e"/>
+  <circle cx="56" cy="21" r="6" fill="#27c93f"/>
+  <text x="80" y="26" class="title">CI Pipeline with Security Scanning / Build, Test &amp; Security Scan</text>
+
+  <!-- Job Summary Badge -->
+  <rect x="715" y="11" width="115" height="22" class="badge-success"/>
+  <text x="726" y="26" class="badge-text">✓ Success (Audit)</text>
+
+  <!-- Steps List -->
+  <!-- Step 1 -->
+  <g transform="translate(25, 62)">
+    <circle cx="8" cy="8" r="8" fill="#238636"/>
+    <path d="M 5 8 L 7 10 L 11 6" stroke="#ffffff" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+    <text x="26" y="12" class="step-text">Set up job &amp; Checkout repository</text>
+    <text x="760" y="12" class="step-duration" text-anchor="end">2s</text>
+  </g>
+
+  <!-- Step 2 -->
+  <g transform="translate(25, 94)">
+    <circle cx="8" cy="8" r="8" fill="#238636"/>
+    <path d="M 5 8 L 7 10 L 11 6" stroke="#ffffff" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+    <text x="26" y="12" class="step-text">Set up Node.js 20 &amp; npm cache</text>
+    <text x="760" y="12" class="step-duration" text-anchor="end">3s</text>
+  </g>
+
+  <!-- Step 3 -->
+  <g transform="translate(25, 126)">
+    <circle cx="8" cy="8" r="8" fill="#238636"/>
+    <path d="M 5 8 L 7 10 L 11 6" stroke="#ffffff" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+    <text x="26" y="12" class="step-text">Install dependencies (npm ci)</text>
+    <text x="760" y="12" class="step-duration" text-anchor="end">14s</text>
+  </g>
+
+  <!-- Step 4 -->
+  <g transform="translate(25, 158)">
+    <circle cx="8" cy="8" r="8" fill="#238636"/>
+    <path d="M 5 8 L 7 10 L 11 6" stroke="#ffffff" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+    <text x="26" y="12" class="step-text">Run automated tests (Jest — 6/6 passing)</text>
+    <text x="760" y="12" class="step-duration" text-anchor="end">4s</text>
+  </g>
+
+  <!-- Step 5 -->
+  <g transform="translate(25, 190)">
+    <circle cx="8" cy="8" r="8" fill="#238636"/>
+    <path d="M 5 8 L 7 10 L 11 6" stroke="#ffffff" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+    <text x="26" y="12" class="step-text">Build Docker image (macky-merch-api:${{ github.sha }})</text>
+    <text x="760" y="12" class="step-duration" text-anchor="end">18s</text>
+  </g>
+
+  <!-- Step 6 (Trivy FS - Warning/Audit Gate) -->
+  <g transform="translate(25, 222)">
+    <circle cx="8" cy="8" r="8" fill="#d29922"/>
+    <text x="6" y="12" fill="#ffffff" font-family="sans-serif" font-size="11" font-weight="bold">!</text>
+    <text x="26" y="12" class="step-text" fill="#e3b341">Run Trivy vulnerability scanner (Filesystem &amp; Dependencies)</text>
+    <text x="760" y="12" class="step-duration" text-anchor="end">12s</text>
+  </g>
+
+  <!-- Trivy FS Findings Box -->
+  <g transform="translate(50, 248)">
+    <rect width="770" height="92" class="log-box"/>
+    <text x="14" y="20" class="log-header">⚠ Trivy Security Gate: Detected 4 HIGH vulnerabilities in package-lock.json (npm)</text>
+    <text x="14" y="38" class="log-text">Target: package-lock.json | Library: <tspan fill="#79c0ff">lodash@4.17.15</tspan> | Vulnerabilities: <tspan class="log-highlight">4 HIGH</tspan> (0 CRITICAL)</text>
+    <text x="14" y="55" class="log-text">• CVE-2020-8203 (HIGH - Prototype Pollution) | CVE-2021-23337 (HIGH - Command Injection)</text>
+    <text x="14" y="72" class="log-text">• CVE-2026-4800 (HIGH - Untrusted Input Execution) | NSWG-ECO-516 (HIGH - ReDoS)</text>
+    <text x="14" y="86" class="log-text" fill="#8b949e">Outcome: exit-code: 1 triggered | Handled gracefully via continue-on-error: true</text>
+  </g>
+
+  <!-- Step 7 (Trivy Container - Warning/Audit Gate) -->
+  <g transform="translate(25, 355)">
+    <circle cx="8" cy="8" r="8" fill="#d29922"/>
+    <text x="6" y="12" fill="#ffffff" font-family="sans-serif" font-size="11" font-weight="bold">!</text>
+    <text x="26" y="12" class="step-text" fill="#e3b341">Run Trivy vulnerability scanner (Container Image)</text>
+    <text x="760" y="12" class="step-duration" text-anchor="end">15s</text>
+  </g>
+
+  <!-- Trivy Image Findings Box -->
+  <g transform="translate(50, 381)">
+    <rect width="770" height="74" class="log-box"/>
+    <text x="14" y="20" class="log-header">⚠ Trivy Container Gate: Image macky-merch-api:${{ github.sha }} scanned</text>
+    <text x="14" y="38" class="log-text">Alpine OS Packages: <tspan fill="#56d364">0 Vulnerabilities</tspan> (Hardened via apk upgrade &amp; tool purging)</text>
+    <text x="14" y="55" class="log-text">Bundled Layer /app/node_modules/lodash: <tspan class="log-highlight">4 HIGH Vulnerabilities</tspan> detected</text>
+    <text x="14" y="69" class="log-text" fill="#8b949e">Audit Gate Active: Detections logged for review; status check marked Success ✅</text>
+  </g>
+</svg>
