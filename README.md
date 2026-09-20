@@ -22,6 +22,7 @@ This repository contains the production-grade DevSecOps pipeline and container o
    - [Remediation Workflow](#remediation-workflow)
 4. [Engineering Challenges & Technical Solutions](#4-engineering-challenges--technical-solutions)
 5. [Summary of DevSecOps & Production Features](#5-summary-of-devsecops--production-features)
+6. [Branch Protection Rule Guidance (Governance & Compliance)](#6-branch-protection-rule-guidance-governance--compliance)
 
 ---
 
